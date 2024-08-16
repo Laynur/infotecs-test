@@ -1,0 +1,10 @@
+.header{
+    height: 70px;
+    width: 100%;
+    display: flex;
+    background-color:cornflowerblue;
+    align-items: center;
+}
+.header-title{
+
+}
