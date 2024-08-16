@@ -1,10 +1,13 @@
 .header{
-    height: 70px;
+    height: 100px;
     width: 100%;
     display: flex;
     background-color:cornflowerblue;
     align-items: center;
 }
 .header-title{
-
+    margin-left: 40px;
+    font-size: 32px;
+    font-family: monospace;
+    color: cornsilk;
 }

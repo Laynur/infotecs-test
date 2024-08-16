@@ -1,0 +1,55 @@
+.table{
+    padding: 10px 10px 0px 10px;
+}
+.table-header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+}
+/* From Uiverse.io by kamehame-ha */ 
+.table_search{
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    position: static;
+    max-width: 240px;
+  }
+  
+.table_search .table_search_title{
+    font-size: 0.75rem;
+    color: #818CF8;
+    font-weight: 700;
+    position: relative;
+    top: 0.5rem;
+    margin: 0 0 0 7px;
+    padding: 0 3px;
+    background: #ffffff;
+    width: fit-content;
+}
+
+.table_search input[type=text].table_search_input{
+    padding: 11px 10px;
+    font-size: 0.75rem;
+    border: 2px #818CF8 solid;
+    border-radius: 5px;
+    background: #ffffff;
+}
+
+.table_search input[type=text].table_search_input:focus {
+    outline: none;
+}
+
+.table-content{
+    table {
+        border-collapse: collapse;
+        width: 100%; 
+        max-width: 1200px; 
+        margin: 0 auto;
+    }
+    
+    th, td {
+        border: 1px solid #dddddd;
+        padding: 8px;
+    }
+}
