@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
-
+import Modal from './Modal';
 function Table() {
     const [users, setUsers] = useState([]);
     const [filteredUsers, setFilteredUsers] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [selectedUser, setSelectedUser] = useState(null);
+    const [showModal, setShowModal] = useState(false);
 
     const fetchUsers = async () => {
         try {
@@ -23,12 +26,36 @@ function Table() {
         fetchUsers();
     }, []);
 
+    useEffect(() => {
+        if (searchTerm) {
+            const filtered = users.filter(user =>
+                Object.values(user).some(value =>
+                    String(value).toLowerCase().includes(searchTerm.toLowerCase())
+                )
+            );
+            setFilteredUsers(filtered);
+        } else {
+            setFilteredUsers(users);
+        }
+    }, [searchTerm, users]);
+
+
+    const openModal = (user) =>{
+        //alert("Открыто");
+        setShowModal(true)
+        setSelectedUser(user);
+     
+    }
+    const closeModal = () =>{
+        setShowModal(false)
+        setSelectedUser(null);
+    }
+
 
     return (
         <>
             <div className="table">
                 <div className="table-header">
-                    <h2>Таблица пользователей</h2>
                     <div className="table_search">
                         <label className="table_search_title">Поиск:</label>
                         <input
@@ -36,6 +63,8 @@ function Table() {
                             placeholder="Введите"
                             name="table_search_input"
                             className="table_search_input"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
                         />
                     </div>
                 </div>
@@ -52,8 +81,8 @@ function Table() {
                         </thead>
                         <tbody>
                             {filteredUsers.map(user => (
-                                <tr key={user.id}>
-                                    <td>{user.firstName} {user.lastName}</td>
+                                <tr onClick={()=>openModal(user)} className='tabel-content-row' key={user.id}>
+                                    <td>{user.firstName} {user.lastName} {user.maidenName}</td>
                                     <td>{user.age}</td>
                                     <td>{user.gender}</td>
                                     <td>{user.phone}</td>
@@ -64,6 +93,7 @@ function Table() {
                     </table>
                 </div>
             </div>
+            <Modal isOpen={showModal} onClose={closeModal} user={selectedUser} />
         </>
     );
 }

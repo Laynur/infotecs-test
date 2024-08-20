@@ -4,7 +4,7 @@
 .table-header{
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-end;
 
 }
 /* From Uiverse.io by kamehame-ha */ 
@@ -41,6 +41,7 @@
 }
 
 .table-content{
+    margin-top: 10px;
     table {
         border-collapse: collapse;
         width: 100%; 
@@ -52,4 +53,8 @@
         border: 1px solid #dddddd;
         padding: 8px;
     }
+}
+.tabel-content-row:hover{
+    background-color: black;
+    color: white;
 }
