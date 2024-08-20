@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import Modal from './Modal';
+
 function Table() {
     const [users, setUsers] = useState([]);
     const [filteredUsers, setFilteredUsers] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedUser, setSelectedUser] = useState(null);
     const [showModal, setShowModal] = useState(false);
+    const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
 
     const fetchUsers = async () => {
         try {
@@ -27,31 +29,72 @@ function Table() {
     }, []);
 
     useEffect(() => {
+        let filtered = [...users];
         if (searchTerm) {
-            const filtered = users.filter(user =>
+            filtered = users.filter(user =>
                 Object.values(user).some(value =>
                     String(value).toLowerCase().includes(searchTerm.toLowerCase())
                 )
             );
-            setFilteredUsers(filtered);
-        } else {
-            setFilteredUsers(users);
         }
-    }, [searchTerm, users]);
 
+        if (sortConfig.key) {
+            filtered.sort((a, b) => {
+                let aValue, bValue;
 
-    const openModal = (user) =>{
-        //alert("Открыто");
-        setShowModal(true)
+                if (sortConfig.key === 'fullName') {
+                    aValue = `${a.firstName} ${a.lastName} ${a.maidenName}`;
+                    bValue = `${b.firstName} ${b.lastName} ${b.maidenName}`;
+                } else if (sortConfig.key === 'address') {
+                    aValue = `${a.address.city}, ${a.address.street}`;
+                    bValue = `${b.address.city}, ${b.address.street}`;
+                } else {
+                    aValue = a[sortConfig.key];
+                    bValue = b[sortConfig.key];
+                }
+
+                if (aValue < bValue) return sortConfig.direction === 'ascending' ? -1 : 1;
+                if (aValue > bValue) return sortConfig.direction === 'ascending' ? 1 : -1;
+                return 0;
+            });
+        }
+
+        setFilteredUsers(filtered);
+    }, [searchTerm, users, sortConfig]);
+
+    const openModal = (user) => {
+        setShowModal(true);
         setSelectedUser(user);
-     
-    }
-    const closeModal = () =>{
-        setShowModal(false)
+    };
+
+    const closeModal = () => {
+        setShowModal(false);
         setSelectedUser(null);
-    }
+    };
 
+    const requestSort = (key) => {
+        let direction = 'ascending';
+        if (
+            sortConfig.key === key &&
+            sortConfig.direction === 'ascending'
+        ) {
+            direction = 'descending';
+        } else if (
+            sortConfig.key === key &&
+            sortConfig.direction === 'descending'
+        ) {
+            direction = null;
+        }
 
+        setSortConfig({ key, direction });
+    };
+
+    const getSortDirection = (key) => {
+        if (sortConfig.key === key) {
+            return sortConfig.direction === 'ascending' ? '↑' : sortConfig.direction === 'descending' ? '↓' : '';
+        }
+        return '';
+    };
     return (
         <>
             <div className="table">
@@ -72,16 +115,24 @@ function Table() {
                     <table>
                         <thead>
                             <tr>
-                                <th>ФИО</th>
-                                <th>Возраст</th>
-                                <th>Пол</th>
+                                <th onClick={() => requestSort('fullName')}>
+                                    ФИО {getSortDirection('fullName')}
+                                </th>
+                                <th onClick={() => requestSort('age')}>
+                                    Возраст {getSortDirection('age')}
+                                </th>
+                                <th onClick={() => requestSort('gender')}>
+                                    Пол {getSortDirection('gender')}
+                                </th>
                                 <th>Номер телефона</th>
-                                <th>Адрес</th>
+                                <th onClick={() => requestSort('address')}>
+                                    Адрес {getSortDirection('address')}
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
                             {filteredUsers.map(user => (
-                                <tr onClick={()=>openModal(user)} className='tabel-content-row' key={user.id}>
+                                <tr onClick={() => openModal(user)} className='tabel-content-row' key={user.id}>
                                     <td>{user.firstName} {user.lastName} {user.maidenName}</td>
                                     <td>{user.age}</td>
                                     <td>{user.gender}</td>
